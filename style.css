@@ -1,0 +1,15 @@
+* {
+    box-sizing: border-box;
+    margin:0;
+}
+
+html {
+    margin: 0;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    background-image: url('img/bg.png');
+    background-repeat: repeat;
+}

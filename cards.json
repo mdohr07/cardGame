@@ -1,0 +1,47 @@
+[
+    {
+        "name": "Space Frog",
+        "cardNumber": 1,
+        "imgFront": "spaceFrog.png",
+        "imgBack": "cardBack.png",
+        "width": 100,
+        "height": 150,
+        "isFlipped": false
+    },
+    {
+        "name": "Pirate",
+        "cardNumber": 2,
+        "imgFront": "pirate.png",
+        "imgBack": "cardBack.png",
+        "width": 100,
+        "height": 150,
+        "isFlipped": false
+    },
+    {
+        "name": "Slimey Lifeform",
+        "cardNumber": 3,
+        "imgFront": "slimesLifeform.png",
+        "imgBack": "cardBack.png",
+        "width": 100,
+        "height": 150,
+        "isFlipped": false
+    },
+    {
+        "name": "Galactic Worm",
+        "cardNumber": 4,
+        "imgFront": "galacticWorm.png",
+        "imgBack": "cardBack.png",
+        "width": 100,
+        "height": 150,
+        "isFlipped": false
+    },
+    {
+        "name": "Space Anomaly",
+        "cardNumber": 5,
+        "imgFront": "spaceAnomaly.png",
+        "imgBack": "cardBack.png",
+        "width": 100,
+        "height": 150,
+        "isFlipped": false
+    }
+]

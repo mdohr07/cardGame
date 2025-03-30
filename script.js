@@ -9,12 +9,21 @@ const cardHeight = 150;
 fetch("cards.json")
     .then(response => response.json())
     .then(data => {
+let loadedImages = 0;
+
         data.forEach((cardData, index) => {
             const imgFront = new Image();
             const imgBack = new Image();
         
             imgFront.src = `img/${cardData.imgFront}`;
             imgBack.src = `img/${cardData.imgBack}`;
+
+            imgFront.onload = imgBack.onload = () => {
+                loadedImages++;
+                if (loadedImages === data.length * 2) {
+                    drawCards(); // Zeichne erst, wenn ALLE Bilder geladen sind
+                }
+            };
 
             cards.push({
                 name: cardData.name,
@@ -28,7 +37,6 @@ fetch("cards.json")
                 imgBack: imgBack
             });
         });
-        drawCards();
     })
     .catch(error => console.error("Something went wrong when loading the JSON-file:", error));
 

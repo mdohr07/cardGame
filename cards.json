@@ -24,7 +24,7 @@
     {
         "cardName": "Slimey Lifeform",
         "cardNumber": 3,
-        "atck": 3,
+        "atck": 4,
         "dfns": 10,
         "imgFront": "samplecard.jpg",
         "imgBack": "cardBack.jpg",

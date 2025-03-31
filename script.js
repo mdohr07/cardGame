@@ -8,6 +8,8 @@ const playerCards = [];
 const enemyCards = [];
 
 let currentTurn = "player";
+let playerHP = 30;
+let enemyHP = 30;
 
 // JSON-Datei laden
 fetch("cards.json")
@@ -117,6 +119,64 @@ function drawCards() {
     });
 }
 
+function playerTurn(card) {
+    card.isFlipped = true;
+    drawCards();
+
+    // Checken, ob Gegner dran ist
+    setTimeout(enemyTurn, 1000);
+}
+
+// Wenn der Gegner automatisch eine Karte spielt
+function enemyTurn() {
+    /*  availableCards enthält alle noch verdeckten Karten des Gegners 
+    Das filter-Array gibt nur die Karten zurück, die noch nicht aufgedeckt wurden.
+    Math.random() gibt eine Zufallszahl zwischen 0 und 1 zurück (z. B. 0.743 oder 0.123).
+    Wenn man das mit availableCards.length multipliziert -> Zufallszahl zwischen 0 und der Anzahl der verfügbaren Karten.
+    Math.floor() wird benutzt, um die Zufallszahl abzurunden. */
+    const availableCards = enemyCards.filter(card => !card.isFlipped);
+    if (availableCards.length > 0) {
+        const randomCard = availableCards[Math.floor(Math.random() * availableCards.length)];
+        randomCard.isFlipped = true;
+        drawCards();
+        checkBattle();
+    }
+}
+
+function checkBattle() {
+    const playerCard = playerCards.find(card => card.isFlipped);
+    const enemyCard = enemyCards.find(card => card.isFlipped);
+
+    if (playerCard && enemyCard) {
+        if (playerCard.atck > enemyCard.dfns) {
+            console.log("You dealt damage!");
+            enemyHP--;
+        } else if (enemyCard.atck > playerCard.dfns) {
+            console.log("You took damage!");
+            playerHP--;
+        } else {
+            console.log("It's a draw.");
+        }
+
+        // Warten, bevor die Karten entfernt werden
+        setTimeout(() => {
+            if (playerCard) playerCards.splice(playerCards.indexOf(playerCard), 1);
+            if (enemyCard) enemyCards.splice(enemyCards.indexOf(enemyCard), 1);
+
+            drawCards(); // Neu zeichnen
+            checkGameOver(); // Spiel vorbei?
+        }, 1800);
+    }
+}
+
+function checkGameOver() {
+    if (playerHP <= 0) {
+        console.log("You lost 💀");
+    } else if (enemyHP <= 0) {
+        console.log("You won 🎉");
+    }
+}
+
 // Klick-Event: Karte umdrehen
 canvas.addEventListener("click", (event) => {
     if (currentTurn !== "player") return; // Spieler kann nur in seinem Zug klicken
@@ -138,32 +198,6 @@ canvas.addEventListener("click", (event) => {
         }
     });
 });
-
-function enemyTurn() {
-    /*  availableCards enthält alle noch verdeckten Karten des Gegners 
-    Das filter-Array gibt nur die Karten zurück, die noch nicht aufgedeckt wurden.
-    Math.random() gibt eine Zufallszahl zwischen 0 und 1 zurück (z. B. 0.743 oder 0.123).
-    Wenn man das mit availableCards.length multipliziert -> Zufallszahl zwischen 0 und der Anzahl der verfügbaren Karten.
-    Math.floor() wird benutzt, um die Zufallszahl abzurunden. */
-    const availableCards = enemyCards.filter(card => !card.isFlipped); 
-    if (availableCards.length > 0) {
-        const randomCard = availableCards[Math.floor(Math.random() * availableCards.length)];
-        randomCard.isFlipped = true;
-        drawCards();
-    }
-    currentTurn = "player";
-}
-    enemyCards.forEach(card => {
-        if (
-            mouseX >= card.x && mouseX <= card.x + card.width &&
-            mouseY >= card.y && mouseY <= card.y + card.height
-        ) {
-            card.isFlipped = !card.isFlipped;
-        }
-    });
-
-    drawCards(); // Aktualisiere das Canvas nach jedem Klick
-
 
 
 

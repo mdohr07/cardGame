@@ -2,8 +2,8 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const cards = [];
-const cardWidth = 100;
-const cardHeight = 150;
+const cardWidth = 120;
+const cardHeight = 170;
 
 // JSON-Datei laden
 fetch("cards.json")
@@ -26,8 +26,10 @@ let loadedImages = 0;
             };
 
             cards.push({ // Cards-Array befüllen
-                name: cardData.name,
+                cardName: cardData.cardName,
                 cardNumber: cardData.cardNumber,
+                atck: cardData.atck,
+                dfns: cardData.dfns,
                 x: index * (canvas.width / data.length), // teilt die Gesamtbreite des Canvas in gleich große Abschnitte
                 y: canvas.height - cardHeight - 10, // Am unteren Rand positionieren
                 width: cardWidth,
@@ -46,6 +48,20 @@ let loadedImages = 0;
         cards.forEach(card => {
             const img = card.isFlipped ? card.imgFront : card.imgBack;
             ctx.drawImage(img, card.x, card.y, card.width, card.height);
+
+            if (card.isFlipped) {
+                ctx.fillStyle = "white";
+                ctx.strokeStyle = "black";
+                ctx.font = "14px Arial";
+                ctx.textAlign = "center"; 
+                ctx.shadowColor = "black";  
+                ctx.shadowOffsetX = 1;      
+                ctx.shadowOffsetY = 1;      
+                ctx.shadowBlur = 3; 
+                ctx.fillText(`${card.cardName}`, card.x + card.width / 2, card.y + 20);
+                ctx.textAlign = "right";
+                ctx.fillText(`${card.atck}/${card.dfns}`, card.x + 110, card.y + card.height - 10);
+            }
         });
     }
 

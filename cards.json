@@ -1,47 +1,57 @@
 [
     {
-        "name": "Space Frog",
+        "cardName": "Space Frog",
         "cardNumber": 1,
+        "atck": 5,
+        "dfns": 3,
         "imgFront": "samplecard.jpg",
         "imgBack": "cardBack.jpg",
-        "width": 100,
-        "height": 150,
+        "width": 120,
+        "height": 170,
         "isFlipped": false
     },
     {
-        "name": "Pirate",
+        "cardName": "Pirate",
         "cardNumber": 2,
+        "atck": 7,
+        "dfns": 4,
         "imgFront": "samplecard.jpg",
         "imgBack": "cardBack.jpg",
-        "width": 100,
-        "height": 150,
+        "width": 120,
+        "height": 170,
         "isFlipped": false
     },
     {
-        "name": "Slimey Lifeform",
+        "cardName": "Slimey Lifeform",
         "cardNumber": 3,
+        "atck": 3,
+        "dfns": 10,
         "imgFront": "samplecard.jpg",
         "imgBack": "cardBack.jpg",
-        "width": 100,
-        "height": 150,
+        "width": 120,
+        "height": 170,
         "isFlipped": false
     },
     {
-        "name": "Galactic Worm",
+        "cardName": "Galactic Worm",
         "cardNumber": 4,
+        "atck": 7,
+        "dfns": 7,
         "imgFront": "samplecard.jpg",
         "imgBack": "cardBack.jpg",
-        "width": 100,
-        "height": 150,
+        "width": 120,
+        "height": 170,
         "isFlipped": false
     },
     {
-        "name": "Space Anomaly",
+        "cardName": "Space Anomaly",
         "cardNumber": 5,
+        "atck": 10,
+        "dfns": 10,
         "imgFront": "samplecard.jpg",
         "imgBack": "cardBack.jpg",
-        "width": 100,
-        "height": 150,
+        "width": 120,
+        "height": 170,
         "isFlipped": false
     }
 ]

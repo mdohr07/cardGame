@@ -7,6 +7,8 @@ const cardHeight = 170;
 const playerCards = [];
 const enemyCards = [];
 
+let currentTurn = "player";
+
 // JSON-Datei laden
 fetch("cards.json")
     .then(response => response.json())
@@ -22,8 +24,8 @@ fetch("cards.json")
             imgBack.src = `img/${cardData.imgBack}`;
 
             imgFront.onload = imgBack.onload = () => {
-                loadedImages++; 
-                if (loadedImages === data.length * 2) { 
+                loadedImages++;
+                if (loadedImages === data.length * 2) {
                     drawCards(); // Zeichne erst, wenn ALLE Bilder geladen sind
                 }
             };
@@ -117,6 +119,8 @@ function drawCards() {
 
 // Klick-Event: Karte umdrehen
 canvas.addEventListener("click", (event) => {
+    if (currentTurn !== "player") return; // Spieler kann nur in seinem Zug klicken
+
     const rect = canvas.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
@@ -124,12 +128,31 @@ canvas.addEventListener("click", (event) => {
     playerCards.forEach(card => {
         if (
             mouseX >= card.x && mouseX <= card.x + card.width &&
-            mouseY >= card.y && mouseY <= card.y + card.height
+            mouseY >= card.y && mouseY <= card.y + card.height &&
+            !card.isFlipped
         ) {
-            card.isFlipped = !card.isFlipped;
+            card.isFlipped = true;
+            drawCards();
+            currentTurn = "enemy"; // Jetzt ist der Gegner dran
+            setTimeout(enemyTurn, 1000); // Gegner zieht nach einer Sekunde
         }
     });
+});
 
+function enemyTurn() {
+    /*  availableCards enthält alle noch verdeckten Karten des Gegners 
+    Das filter-Array gibt nur die Karten zurück, die noch nicht aufgedeckt wurden.
+    Math.random() gibt eine Zufallszahl zwischen 0 und 1 zurück (z. B. 0.743 oder 0.123).
+    Wenn man das mit availableCards.length multipliziert -> Zufallszahl zwischen 0 und der Anzahl der verfügbaren Karten.
+    Math.floor() wird benutzt, um die Zufallszahl abzurunden. */
+    const availableCards = enemyCards.filter(card => !card.isFlipped); 
+    if (availableCards.length > 0) {
+        const randomCard = availableCards[Math.floor(Math.random() * availableCards.length)];
+        randomCard.isFlipped = true;
+        drawCards();
+    }
+    currentTurn = "player";
+}
     enemyCards.forEach(card => {
         if (
             mouseX >= card.x && mouseX <= card.x + card.width &&
@@ -140,10 +163,10 @@ canvas.addEventListener("click", (event) => {
     });
 
     drawCards(); // Aktualisiere das Canvas nach jedem Klick
-});
 
 
-        
+
+
 
 // function drawCards() {
 //     ctx.clearRect(0, 0, canvas.width, canvas.height);

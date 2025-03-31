@@ -165,15 +165,22 @@ function checkBattle() {
 
             drawCards(); // Neu zeichnen
             checkGameOver(); // Spiel vorbei?
+
+            // Wenn das Spiel nicht vorbei ist, neue Karte ziehen
+            if (playerCards.length > 0 && enemyCards.length > 0) {
+                currentTurn = "player";
+            }
         }, 1800);
     }
 }
 
 function checkGameOver() {
-    if (playerHP <= 0) {
+    if (playerHP <= 0 || playerCards.length === 0) {
         console.log("You lost 💀");
-    } else if (enemyHP <= 0) {
+        alert("You lost 💀");
+    } else if (enemyHP <= 0 || enemyCards.length === 0) {
         console.log("You won 🎉");
+        alert("You won 🎉");
     }
 }
 

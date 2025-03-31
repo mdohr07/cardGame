@@ -7,7 +7,7 @@ const cardHeight = 150;
 
 // JSON-Datei laden
 fetch("cards.json")
-    .then(response => response.json())
+    .then(response => response.json()) // Hier wird das JSON in ein Array umgewandelt
     .then(data => {
 let loadedImages = 0;
 
@@ -25,11 +25,11 @@ let loadedImages = 0;
                 }
             };
 
-            cards.push({
+            cards.push({ // Cards-Array befüllen
                 name: cardData.name,
                 cardNumber: cardData.cardNumber,
-                x: Math.random() * (canvas.width - cardWidth), // Zufällige X-Position
-                y: Math.random() * (canvas.height - cardHeight), // Zufällige Y-Position
+                x: index * (canvas.width / data.length), // teilt die Gesamtbreite des Canvas in gleich große Abschnitte
+                y: canvas.height - cardHeight - 10, // Am unteren Rand positionieren
                 width: cardWidth,
                 height: cardHeight,
                 isFlipped: false,

@@ -175,12 +175,14 @@ function checkBattle() {
 }
 
 function checkGameOver() {
+    const messageDiv = document.getElementById("gameMessage");
+
     if (playerHP <= 0 || playerCards.length === 0) {
         console.log("You lost 💀");
-        alert("You lost 💀");
+        messageDiv.textContent = "You lost 💀";
     } else if (enemyHP <= 0 || enemyCards.length === 0) {
         console.log("You won 🎉");
-        alert("You won 🎉");
+        messageDiv = "You won 🎉";
     }
 }
 

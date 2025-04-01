@@ -53,5 +53,60 @@
         "width": 120,
         "height": 170,
         "isFlipped": false
+    },
+    {
+        "cardName": "Sector 8 Ranger",
+        "cardNumber": 6,
+        "atck": 8,
+        "dfns": 6,
+        "imgFront": "samplecard.jpg",
+        "imgBack": "cardBack.jpg",
+        "width": 120,
+        "height": 170,
+        "isFlipped": false
+    },
+    {
+        "cardName": "Radical Robot",
+        "cardNumber": 7,
+        "atck": 9,
+        "dfns": 9,
+        "imgFront": "samplecard.jpg",
+        "imgBack": "cardBack.jpg",
+        "width": 120,
+        "height": 170,
+        "isFlipped": false
+    },
+    {
+        "cardName": "N-AF1 Drone",
+        "cardNumber": 8,
+        "atck": 5,
+        "dfns": 3,
+        "imgFront": "samplecard.jpg",
+        "imgBack": "cardBack.jpg",
+        "width": 120,
+        "height": 170,
+        "isFlipped": false
+    },
+    {
+        "cardName": "Sector 8 Rebel",
+        "cardNumber": 9,
+        "atck": 5,
+        "dfns": 6,
+        "imgFront": "samplecard.jpg",
+        "imgBack": "cardBack.jpg",
+        "width": 120,
+        "height": 170,
+        "isFlipped": false
+    },
+    {
+        "cardName": "10Tackle Bot",
+        "cardNumber": 10,
+        "atck": 10,
+        "dfns": 10,
+        "imgFront": "samplecard.jpg",
+        "imgBack": "cardBack.jpg",
+        "width": 120,
+        "height": 170,
+        "isFlipped": false
     }
 ]

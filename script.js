@@ -15,10 +15,17 @@ let enemyHP = 30;
 fetch("cards.json")
     .then(response => response.json())
     .then(data => {
+        // Karten mischen
+        const shuffleCards = data.sort(() => Math.random() - 0.5);
+
+        // 5 Karten ziehen
+        const playerDeck = shuffleCards.slice (0, 5);
+        const enemyDeck = shuffleCards.slice(5, 10);
+
         let loadedImages = 0;
 
-        // Spielerkarten
-        data.forEach((cardData, index) => {
+        // Spielerkarten erstellen
+        playerDeck.forEach((cardData, index) => {
             const imgFront = new Image();
             const imgBack = new Image();
 
@@ -27,17 +34,18 @@ fetch("cards.json")
 
             imgFront.onload = imgBack.onload = () => {
                 loadedImages++;
-                if (loadedImages === data.length * 2) {
+                if (loadedImages === 10) {
                     drawCards(); // Zeichne erst, wenn ALLE Bilder geladen sind
                 }
             };
 
             playerCards.push({ // Cards-Array befüllen
+                ...cardData,
                 cardName: cardData.cardName,
                 cardNumber: cardData.cardNumber,
                 atck: cardData.atck,
                 dfns: cardData.dfns,
-                x: index * (canvas.width / data.length), // Gleichmäßige Verteilung
+                x: index * (canvas.width / 5), // Gleichmäßige Verteilung
                 y: canvas.height - cardHeight - 10, // Am unteren Rand positionieren
                 width: cardWidth,
                 height: cardHeight,
@@ -47,8 +55,8 @@ fetch("cards.json")
             });
         });
 
-        // Gegnerkarten
-        data.forEach((cardData, index) => {
+        // Gegnerkarten erstellen
+        enemyDeck.forEach((cardData, index) => {
             const imgFront = new Image();
             const imgBack = new Image();
 
@@ -56,11 +64,12 @@ fetch("cards.json")
             imgBack.src = `img/${cardData.imgBack}`;
 
             enemyCards.push({
+                ...cardData,
                 cardName: cardData.cardName,
                 cardNumber: cardData.cardNumber,
                 atck: cardData.atck,
                 dfns: cardData.dfns,
-                x: index * (canvas.width / data.length), // Gleichmäßige Verteilung
+                x: index * (canvas.width / 5), // Gleichmäßige Verteilung
                 y: 20, // Am oberen Rand
                 width: cardWidth,
                 height: cardHeight,

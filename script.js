@@ -40,11 +40,8 @@ fetch("cards.json")
             };
 
             playerCards.push({ // Cards-Array befüllen
-                ...cardData,
-                cardName: cardData.cardName,
-                cardNumber: cardData.cardNumber,
-                atck: cardData.atck,
-                dfns: cardData.dfns,
+                ...cardData, // Spread Operator (...): Alle Werte aus cardData (Name, Angriff, Verteidigung usw.) werden übernommen
+      
                 x: index * (canvas.width / 5), // Gleichmäßige Verteilung
                 y: canvas.height - cardHeight - 10, // Am unteren Rand positionieren
                 width: cardWidth,
@@ -65,10 +62,7 @@ fetch("cards.json")
 
             enemyCards.push({
                 ...cardData,
-                cardName: cardData.cardName,
-                cardNumber: cardData.cardNumber,
-                atck: cardData.atck,
-                dfns: cardData.dfns,
+
                 x: index * (canvas.width / 5), // Gleichmäßige Verteilung
                 y: 20, // Am oberen Rand
                 width: cardWidth,

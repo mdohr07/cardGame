@@ -30,7 +30,7 @@ main {
     transform: translate(-50%, -50%); /* Exakte Zentrierung */
     text-transform: uppercase;
     color: #fff;
-    font-size: 24px;
+    font-size: 40px;
     font-weight: bold;
     text-align: center;
     padding: 20px;
@@ -47,6 +47,7 @@ main {
     justify-content: space-between;
     font-size: 20px;
     font-weight: bold;
+    text-align: center;
     margin: 100px 0;
 }
 
@@ -62,4 +63,9 @@ main {
     margin-bottom: 15px;
     height: 170px;
     padding: 20px;
+}
+
+.HP {
+    font-size: 60px;
+    color: yellow;
 }

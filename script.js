@@ -8,10 +8,10 @@ const playerCards = [];
 const enemyCards = [];
 
 let currentTurn = "player";
-let playerHP = 30;
-let enemyHP = 30;
+let playerHP = 10;
+let enemyHP = 10;
 
-// JSON-Datei laden
+// JSON-Datei laden, Karten ziehen, Karten erstellen
 fetch("cards.json")
     .then(response => response.json())
     .then(data => {
@@ -101,7 +101,7 @@ function drawCards() {
         }
     });
 
-    // Zeichne alle Gegnerkarten
+// Zeichne alle Gegnerkarten
     enemyCards.forEach(card => {
         const img = card.isFlipped ? card.imgFront : card.imgBack;
         ctx.drawImage(img, card.x, card.y, card.width, card.height);
@@ -122,6 +122,7 @@ function drawCards() {
     });
 }
 
+// Player turn
 function playerTurn(card) {
     card.isFlipped = true;
     drawCards();
@@ -146,6 +147,33 @@ function enemyTurn() {
     }
 }
 
+// Battle math
+function resolveBattle(attackingCard, defendingCard, isPlayerAttacking) {
+    const damage = attackingCard.atck - defendingCard.dfns;
+
+    if (damage > 0) {
+        const actualDamage = Math.ceil(damage); // Math.ceil rundet die Zahl auf
+        if (isPlayerAttacking) {
+            enemyHP -= actualDamage;
+            console.log(`Player dealt ${actualDamage}!`);
+        } else {
+            playerHP -= actualDamage;
+            console.log(`Enemy dealt ${actualDamage}!`);
+        }
+    } else {
+        console.log("No damage dealt");
+    }
+
+    // Karten aus Spiel entfernen
+    removeCardFromGame(attackingCard);
+    removeCardFromGame(defendingCard);
+
+    // HP Anzeige aktualisieren
+    updateHPdisplay();
+    checkGameOver();
+}
+
+// card.isFlipped, HP--, drawCards(), checkGameover()
 function checkBattle() {
     const playerCard = playerCards.find(card => card.isFlipped);
     const enemyCard = enemyCards.find(card => card.isFlipped);
@@ -153,40 +181,92 @@ function checkBattle() {
     if (playerCard && enemyCard) {
         if (playerCard.atck > enemyCard.dfns) {
             console.log("You dealt damage!");
-            enemyHP--;
+            resolveBattle(playerCard, enemyCard, true);
         } else if (enemyCard.atck > playerCard.dfns) {
             console.log("You took damage!");
-            playerHP--;
+            resolveBattle(enemyCard, playerCard, false);
         } else {
             console.log("It's a draw.");
-        }
 
-        // Warten, bevor die Karten entfernt werden
-        setTimeout(() => {
-            if (playerCard) playerCards.splice(playerCards.indexOf(playerCard), 1);
-            if (enemyCard) enemyCards.splice(enemyCards.indexOf(enemyCard), 1);
+            removeCardFromGame(playerCard);
+            removeCardFromGame(enemyCard);
+            drawCards();
+            checkGameOver();
 
-            drawCards(); // Neu zeichnen
-            checkGameOver(); // Spiel vorbei?
-
-            // Wenn das Spiel nicht vorbei ist, neue Karte ziehen
+            // Zug wechseln, wenn noch Karten da sind
             if (playerCards.length > 0 && enemyCards.length > 0) {
-                currentTurn = "player";
+                currentTurn = isPlayerAttacking ? "enemy" : "player";
+
+                if (currentTurn === "enemy") {
+                    setTimeout(enemyTurn, 1000);
+                }
             }
-        }, 1800);
+        }
     }
 }
 
+// Update HP display
+function updateHPdisplay() {
+    document.getElementById("playerHP").innerHTML = `Player HP <br> <p class="HP">${playerHP}</p>`;
+    document.getElementById("enemyHP").innerHTML = `Enemy HP <br> <p class="HP">${enemyHP}</p>`;
+}
+
+// Check if the game is over
 function checkGameOver() {
     const messageDiv = document.getElementById("gameMessage");
 
-    if (playerHP <= 0 || playerCards.length === 0) {
-        console.log("You lost 💀");
-        messageDiv.textContent = "You lost 💀";
-    } else if (enemyHP <= 0 || enemyCards.length === 0) {
-        console.log("You won 🎉");
-        messageDiv = "You won 🎉";
+    // 1. Beide 0 HP
+    if (playerHP <= 0 && enemyHP <= 0) {
+        console.log("It's a draw");
+        messageDiv.textContent = "It's a draw 🤝";
+        return;
     }
+
+    // 2. Gegner tot
+    if (enemyHP <= 0) {
+        console.log("You won");
+        messageDiv.textContent = "You won 🎉";
+        return;
+    }
+
+    // 3. Spieler tot
+    if (playerHP <= 0) {
+        console.log("You lost");
+        messageDiv.textContent = "You lost 💀";
+        return;
+    }
+
+    // 4. Beide keine Karten mehr
+    if (playerCards.length === 0 && enemyCards.length === 0) {
+        if (playerHP > enemyHP) {
+            console.log("You won");
+            messageDiv.textContent = "You won 🎉";
+        } else if (enemyHP > playerHP) {
+            console.log("You lost");
+            messageDiv.textContent = "You lost 💀";
+        } else {
+            console.log("It's a draw");
+            messageDiv.textContent = "It's a draw 🤝";
+        }
+        return;
+    }
+
+    // 5. Nur Spieler hat keine Karten mehr
+    if (playerCards.length === 0) {
+        console.log("You lost");
+        messageDiv.textContent = "You lost 💀";
+        return;
+    }
+
+    // 6. Nur Gegner hat keine Karten mehr
+    if (enemyCards.length === 0) {
+        console.log("You won");
+        messageDiv.textContent = "You won 🎉";
+        return;
+    }
+
+    // Noch kein Game Over
+    console.log("Game still ongoing");
 }
 
 // Klick-Event: Karte umdrehen
@@ -210,71 +290,3 @@ canvas.addEventListener("click", (event) => {
         }
     });
 });
-
-
-
-
-// function drawCards() {
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-//     cards.forEach(card => {
-//         const img = card.isFlipped ? card.imgFront : card.imgBack;
-//         ctx.drawImage(img, card.x, card.y, card.width, card.height);
-
-//         if (card.isFlipped) {
-//             ctx.fillStyle = "white";
-//             ctx.strokeStyle = "black";
-//             ctx.font = "14px Arial";
-//             ctx.textAlign = "center";
-//             ctx.shadowColor = "black";
-//             ctx.shadowOffsetX = 1;
-//             ctx.shadowOffsetY = 1;
-//             ctx.shadowBlur = 3;
-//             ctx.fillText(`${card.cardName}`, card.x + card.width / 2, card.y + 20);
-//             ctx.textAlign = "right";
-//             ctx.fillText(`${card.atck}/${card.dfns}`, card.x + 110, card.y + card.height - 10);
-//         }
-//     });
-// }
-
-
-// const cardBack = new Image();
-// const cardFront = new Image();
-// cardBack.src = "/img/cardBack.jpg";
-// cardFront.src = "/img/samplecard.jpg"; // Beispiel
-
-// // Karten-Objekte definieren
-// const cards = [
-//     { x: 50, y: 50, width: 100, height: 150, isFlipped: false },
-//     { x: 200, y: 50, width: 100, height: 150, isFlipped: false },
-//     { x: 350, y: 50, width: 100, height: 150, isFlipped: false },
-// ];
-
-// // Zeichnet alle Karten auf die Canvas
-// function drawCards() {
-//     ctx.clearRect /* Löscht zuerst das Canvas */
-//     cards.forEach(card => { // Alle Karten durchgehen
-//         const img = card.isFlipped ? cardFront : cardBack; // Ist das die Vorder- oder Rückseite?
-//         ctx.drawImage(img, card.x, card.y, card.width, card.height); // Hole das passende Bild dazu
-//     });
-// }
-
-// // Click-Event: Karte umdrehen
-// canvas.addEventListener("click", (event) => {
-//     const rect = canvas.getBoundingClientRect(); // Position und Größe des canvas im Viewport 
-//     const mouseX = event.clientX - rect.left; // Koordinaten der oberen linken Ecke des Canvas im Browserfenster 
-//     const mouseY = event.clientY - rect.top; // event.clientX & event.clientY sind die Mauskoordinaten relativ zum Gesamtfenster
-
-//     cards.forEach(card => { // Jede Karte prüfen ob sie angeklickt wurde
-//         if ( // War die Maus innerhalb der Kartenkoordinaten?
-//         mouseX >= card.x && mouseX <= card.x + card.width && // Falls ja, wird isFlipped geändert ↓
-//         mouseY >= card.y && mouseY <= card.y + card.height
-//     ) {
-//         card.isFlipped = !card.isFlipped;
-//     }
-//     });
-//     drawCards();
-// });
-
-// // Bilder laden und dann Karten zeichnen
-// cardBack.onload = drawCards;
-// cardFront.onload = drawCards;

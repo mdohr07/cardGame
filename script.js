@@ -146,7 +146,8 @@ function enemyTurn() {
         checkBattle();
     }
 
-    currentTurn = "player"
+    // Nach dem Zug des Gegners wird der Spieler wieder dran sein
+    currentTurn = "player";
 }
 
 function removeCardFromGame(cardToRemove) {

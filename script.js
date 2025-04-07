@@ -145,6 +145,24 @@ function enemyTurn() {
         drawCards();
         checkBattle();
     }
+
+    currentTurn = "player"
+}
+
+function removeCardFromGame(cardToRemove) {
+    // Spielerkarte entfernen
+    const playerIndex = playerCards.indexOf(cardToRemove);
+    if (playerIndex !== -1) {
+        playerCards.splice(playerIndex, 1);
+        return;
+    }
+
+    // Gegnerkarte entfernen
+    const enemyIndex = enemyCards.indexOf(cardToRemove);
+    if (enemyIndex !== -1) {
+        enemyCards.splice(enemyIndex, 1);
+        return;
+    }
 }
 
 // Battle math
@@ -167,6 +185,7 @@ function resolveBattle(attackingCard, defendingCard, isPlayerAttacking) {
     // Karten aus Spiel entfernen
     removeCardFromGame(attackingCard);
     removeCardFromGame(defendingCard);
+    drawCards();
 
     // HP Anzeige aktualisieren
     updateHPdisplay();
@@ -194,16 +213,14 @@ function checkBattle() {
             checkGameOver();
 
             // Zug wechseln, wenn noch Karten da sind
-            if (playerCards.length > 0 && enemyCards.length > 0) {
-                currentTurn = isPlayerAttacking ? "enemy" : "player";
-
+            currentTurn = isPlayerAttacking ? "enemy" : "player";
                 if (currentTurn === "enemy") {
                     setTimeout(enemyTurn, 1000);
                 }
             }
         }
     }
-}
+
 
 // Update HP display
 function updateHPdisplay() {

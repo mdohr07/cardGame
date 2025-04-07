@@ -8,8 +8,8 @@ const playerCards = [];
 const enemyCards = [];
 
 let currentTurn = "player";
-let playerHP = 10;
-let enemyHP = 10;
+let playerHP = 20;
+let enemyHP = 20;
 
 // JSON-Datei laden, Karten ziehen, Karten erstellen
 fetch("cards.json")

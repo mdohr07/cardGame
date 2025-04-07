@@ -26,8 +26,6 @@ main {
 #gameMessage {
     position: absolute; /* Absolute Positionierung relativ zum Viewport */
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Exakte Zentrierung */
     text-transform: uppercase;
     color: #fff;
     font-size: 40px;

@@ -7,6 +7,8 @@ const cardHeight = 170;
 const playerCards = [];
 const enemyCards = [];
 
+let damageEffects = [];
+
 let currentTurn = "player";
 let playerHP = 20;
 let enemyHP = 20;
@@ -120,30 +122,59 @@ function drawCards() {
             ctx.fillText(`${card.atck}/${card.dfns}`, card.x + 110, card.y + card.height - 10);
         }
     });
+
+    drawDamageEffects();
 }
 
-// Player turn
+// Schadenseffekt hinzufügen und entfernen
+function addDamageEffect(x, y, damageAmount) {
+    damageEffects.push({
+        x: x,
+        y: y,
+        damageAmount: damageAmount,
+        alpha: 1.0 // Anfangs sichtbar
+    });
+
+    // Schadenseffekt nach 1 Sekunde entfernen
+    setTimeout(() => {
+        damageEffects = damageEffects.filter(effect => effect.damageAmount !== damageAmount);
+    }, 1000);
+}
+
+// Schadenseffekte auf Canvas zeichnen
+function drawDamageEffects() {
+    ctx.font = "20px Arial";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "red";
+
+    damageEffects.forEach(effect => {
+        ctx.globalAlpha = effect.alpha; // Transparenz
+        ctx.globalAlpha -= 0.05; // Reduziert die Transparenz
+    });
+
+    ctx.globalAlpha = 1.0; // Setzt global Alpha zurück
+}
+
+// Spieler am ZUg
 function playerTurn(card) {
     card.isFlipped = true;
     drawCards();
 
-    // Checken, ob Gegner dran ist
+    // Zug des Spielers beenden
+    currentTurn = "enemy"; // Gegner ist dran
     setTimeout(enemyTurn, 1000);
 }
 
 // Wenn der Gegner automatisch eine Karte spielt
 function enemyTurn() {
-    /*  availableCards enthält alle noch verdeckten Karten des Gegners 
-    Das filter-Array gibt nur die Karten zurück, die noch nicht aufgedeckt wurden.
-    Math.random() gibt eine Zufallszahl zwischen 0 und 1 zurück (z. B. 0.743 oder 0.123).
-    Wenn man das mit availableCards.length multipliziert -> Zufallszahl zwischen 0 und der Anzahl der verfügbaren Karten.
-    Math.floor() wird benutzt, um die Zufallszahl abzurunden. */
     const availableCards = enemyCards.filter(card => !card.isFlipped);
     if (availableCards.length > 0) {
         const randomCard = availableCards[Math.floor(Math.random() * availableCards.length)];
         randomCard.isFlipped = true;
         drawCards();
         checkBattle();
+    } else {
+        console.log("No cards left for enemy")
     }
 
     // Nach dem Zug des Gegners wird der Spieler wieder dran sein
@@ -166,18 +197,36 @@ function removeCardFromGame(cardToRemove) {
     }
 }
 
-// Battle math
+// resolve Battle - math
 function resolveBattle(attackingCard, defendingCard, isPlayerAttacking) {
     const damage = attackingCard.atck - defendingCard.dfns;
+
+    // Kampflogik - Züge
+    if (isPlayerAttacking) {
+        currentTurn = "enemy";
+    } else {
+        currentTurn = "player";
+    }
+    setTimeout(() => {
+        if (currentTurn = "player") {
+            playerTurn();
+        } else {
+            enemyTurn();
+        }
+    }, 1000);
 
     if (damage > 0) {
         const actualDamage = Math.ceil(damage); // Math.ceil rundet die Zahl auf
         if (isPlayerAttacking) {
             enemyHP -= actualDamage;
             console.log(`Player dealt ${actualDamage}!`);
+            // Schadenseffekt anzeigen
+            addDamageEffect(defendingCard.x + defendingCard.width / 2, defendingCard.y + 50, actualDamage);
         } else {
             playerHP -= actualDamage;
             console.log(`Enemy dealt ${actualDamage}!`);
+            // Schadenseffekt anzeigen
+            addDamageEffect(attackingCard.x + attackingCard.width / 2, attackingCard.y + 50, actualDamage);
         }
     } else {
         console.log("No damage dealt");
@@ -215,13 +264,14 @@ function checkBattle() {
 
             // Zug wechseln, wenn noch Karten da sind
             currentTurn = isPlayerAttacking ? "enemy" : "player";
-                if (currentTurn === "enemy") {
+                if (currentTurn === "player") {
                     setTimeout(enemyTurn, 1000);
+                } else if (currentTurn === "enemy") {
+                    setTimeout(playerTurn, 1000);
                 }
             }
         }
     }
-
 
 // Update HP display
 function updateHPdisplay() {
